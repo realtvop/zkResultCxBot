@@ -34,6 +34,7 @@ function getRestlt() {
             const n = t.match(/<CENTER><p class='font-n font-blod'>(.*?)<\/font><\/center>/i);
             if (n && n[1] == "暂时还没有你的录取结果！请根据公布的批次线和个人成绩按录取时间安排来查询！") return ["还没到喵\\~别急", false];
             const m = [...t.matchAll(/<td\s+align="center">(.*?)<\/td>/gi)];
+            if (!m[0]) return ["😡 查询出错\\!\\!\\! \\(有可能为 Cookies 配置有误或不完整,请参照 [README](https://github.com/realtvop/zkResultCxBot/blob/main/README.md) 中的信息重新填写\\)", true];
             return [
                 `🎉 恭喜 *${
                     m[4] && m[4][1] ? m[4][1].replaceAll("　", "") : "未知批次"
@@ -43,7 +44,7 @@ function getRestlt() {
                 true
             ];
         })
-        .catch(() => ["😡 查询出错!!!", true]);
+        .catch(() => ["😡 查询出错\\!\\!\\!", true]);
 }
 
 function getAndSend() {
