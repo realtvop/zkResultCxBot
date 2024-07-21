@@ -32,7 +32,7 @@ function getRestlt() {
         .then(r => r.text())
         .then(t => {
             const n = t.match(/<CENTER><p class='font-n font-blod'>(.*?)<\/font><\/center>/i);
-            if (n && n[1] == "暂时还没有你的录取结果！请根据公布的批次线和个人成绩按录取时间安排来查询！") return ["还没到喵~别急", false];
+            if (n && n[1] == "暂时还没有你的录取结果！请根据公布的批次线和个人成绩按录取时间安排来查询！") return ["还没到喵\\~别急", false];
             const m = [...t.matchAll(/<td\s+align="center">(.*?)<\/td>/gi)];
             return [
                 `🎉 恭喜 *${
