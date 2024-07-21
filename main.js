@@ -1,3 +1,4 @@
+const { ParseError } = require("node-telegram-bot-api/lib/errors.js");
 const { checkInterval, botToken, userId, cookie } = require("./config.js");
 
 function getRestlt() {
@@ -30,11 +31,18 @@ function getRestlt() {
         body: "leibie=0",
     })
         .then(r => r.text())
-        .then(t => t.match(/<CENTER><p class='font-n font-blod'>(.*?)<\/font><\/center>/i))
-        .then(r => {
-            if (!r || !r[1]) return ["😡 查询出错!!!", true];
-            if (r[1] == "暂时还没有你的录取结果！请根据公布的批次线和个人成绩按录取时间安排来查询！") return ["还没到喵~别急", false];
-            return ["🎉 录取上了!!!!!", true];
+        .then(t => {
+            const n = t.match(/<CENTER><p class='font-n font-blod'>(.*?)<\/font><\/center>/i);
+            if (n && n[1] == "暂时还没有你的录取结果！请根据公布的批次线和个人成绩按录取时间安排来查询！") return ["还没到喵~别急", false];
+            const m = [...t.matchAll(/<td\s+align="center">(.*?)<\/td>/gi)];
+            return [
+                `🎉 恭喜 *${
+                    m[4] && m[4][1] ? m[4][1].replaceAll("　", "") : "未知批次"
+                }* 成功上岸\n>${
+                    m[2] && m[2][1] ? m[2][1] : "未知学校"
+                }\n查询: [综合查询](https://zhongkao.gzzk.cn/cx)`,
+                true
+            ];
         })
         .catch(() => ["😡 查询出错!!!", true]);
 }
@@ -52,11 +60,13 @@ function getAndSend() {
                     chat_id: userId,
                     text: r[0],
                     disable_notification: !r[1],
+                    parse_mode: "MarkdownV2",
                 }),
             }
         );
     })
 }
+
 
 getAndSend();
 setInterval(getAndSend, checkInterval * 60e3);
