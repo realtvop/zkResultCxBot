@@ -1,4 +1,3 @@
-const { ParseError } = require("node-telegram-bot-api/lib/errors.js");
 const { checkInterval, botToken, userId, cookie } = require("./config.js");
 
 function getRestlt() {
